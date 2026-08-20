@@ -217,18 +217,22 @@ export function VoiceInterface() {
   }, [startTime]);
 
   const stopSession = useCallback(async () => {
+    // Immediately update UI so button feels responsive
+    setSessionActive(false);
+    setAgentState(AgentState.IDLE);
+    setMuted(false);
     setStopping(true);
+
+    const agent = agentRef.current;
+    agentRef.current = null;
+
     try {
-      if (agentRef.current) {
-        await agentRef.current.stop();
+      if (agent) {
+        await agent.stop();
       }
     } catch (err) {
       console.error("Error stopping session:", err);
     } finally {
-      agentRef.current = null;
-      setSessionActive(false);
-      setAgentState(AgentState.IDLE);
-      setMuted(false);
       setStopping(false);
     }
   }, []);
