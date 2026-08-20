@@ -305,14 +305,14 @@ export function VoiceInterface() {
             {/* Outer pulse rings */}
             {sessionActive && agentState === AgentState.LISTENING && (
               <>
-                <div className="absolute inset-0 rounded-full bg-blue-400/20 animate-ping scale-150" />
-                <div className="absolute inset-0 rounded-full bg-blue-400/10 animate-ping scale-125 [animation-delay:300ms]" />
+                <div className="absolute inset-0 rounded-full bg-blue-400/20 animate-ping scale-150 pointer-events-none" />
+                <div className="absolute inset-0 rounded-full bg-blue-400/10 animate-ping scale-125 [animation-delay:300ms] pointer-events-none" />
               </>
             )}
             {sessionActive && agentState === AgentState.SPEAKING && (
               <>
-                <div className="absolute inset-0 rounded-full bg-violet-400/20 animate-ping scale-150" />
-                <div className="absolute inset-0 rounded-full bg-violet-400/10 animate-ping scale-125 [animation-delay:300ms]" />
+                <div className="absolute inset-0 rounded-full bg-violet-400/20 animate-ping scale-150 pointer-events-none" />
+                <div className="absolute inset-0 rounded-full bg-violet-400/10 animate-ping scale-125 [animation-delay:300ms] pointer-events-none" />
               </>
             )}
 
