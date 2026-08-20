@@ -49,6 +49,7 @@ export function VoiceInterface() {
   const [sessionActive, setSessionActive] = useState(false);
   const [muted, setMuted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [stopping, setStopping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([]);
   const [leadInfo, setLeadInfo] = useState<LeadInfo>({});
@@ -216,12 +217,20 @@ export function VoiceInterface() {
   }, [startTime]);
 
   const stopSession = useCallback(async () => {
-    if (agentRef.current) {
-      await agentRef.current.stop();
+    setStopping(true);
+    try {
+      if (agentRef.current) {
+        await agentRef.current.stop();
+      }
+    } catch (err) {
+      console.error("Error stopping session:", err);
+    } finally {
       agentRef.current = null;
+      setSessionActive(false);
+      setAgentState(AgentState.IDLE);
+      setMuted(false);
+      setStopping(false);
     }
-    setSessionActive(false);
-    setAgentState(AgentState.IDLE);
   }, []);
 
   const toggleMute = useCallback(() => {
@@ -334,10 +343,15 @@ export function VoiceInterface() {
 
                 <button
                   onClick={stopSession}
-                  className="flex h-16 w-16 items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-200 shadow-lg shadow-red-600/30"
+                  disabled={stopping}
+                  className="flex h-16 w-16 items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-200 shadow-lg shadow-red-600/30 disabled:opacity-70 disabled:cursor-not-allowed"
                   aria-label="End call"
                 >
-                  <PhoneOff size={24} />
+                  {stopping ? (
+                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  ) : (
+                    <PhoneOff size={24} />
+                  )}
                 </button>
               </div>
             )}
